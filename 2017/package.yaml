@@ -1,0 +1,11 @@
+name: adventofcode2017
+version: 1.0.0
+
+dependencies:
+  - base
+
+executables:
+  day-01:
+    main: Day01/Main.hs
+    dependencies:
+      - array
