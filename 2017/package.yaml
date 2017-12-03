@@ -9,3 +9,7 @@ executables:
     main: Day01/Main.hs
     dependencies:
       - array
+  day-02:
+    main: Day02/Main.hs
+    dependencies:
+      - recursion-schemes
