@@ -13,3 +13,5 @@ executables:
     main: Day02/Main.hs
     dependencies:
       - recursion-schemes
+  day-03:
+    main: Day03/Main.hs
