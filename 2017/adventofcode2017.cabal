@@ -28,3 +28,11 @@ executable day-03
     , containers
     , lens
   default-language: Haskell2010
+
+executable day-04
+  main-is: Day04/Main.hs
+  build-depends:
+      base
+    , containers
+    , recursion-schemes
+  default-language: Haskell2010

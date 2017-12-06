@@ -18,4 +18,9 @@ executables:
     dependencies:
       - containers
       - lens
+  day-04:
+    main: Day04/Main.hs
+    dependencies:
+      - containers
+      - recursion-schemes
 
