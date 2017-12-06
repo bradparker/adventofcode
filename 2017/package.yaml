@@ -15,3 +15,7 @@ executables:
       - recursion-schemes
   day-03:
     main: Day03/Main.hs
+    dependencies:
+      - containers
+      - lens
+

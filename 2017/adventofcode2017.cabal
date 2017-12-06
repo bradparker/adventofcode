@@ -25,4 +25,6 @@ executable day-03
   main-is: Day03/Main.hs
   build-depends:
       base
+    , containers
+    , lens
   default-language: Haskell2010
