@@ -23,4 +23,8 @@ executables:
     dependencies:
       - containers
       - recursion-schemes
+  day-05:
+    main: Day05/Main.hs
+    dependencies:
+      - ListZipper
 
