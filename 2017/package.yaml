@@ -4,6 +4,10 @@ version: 1.0.0
 dependencies:
   - base
 
+library:
+  source-dirs:
+    - shared
+
 executables:
   day-01:
     main: Day01/Main.hs
@@ -26,5 +30,6 @@ executables:
   day-05:
     main: Day05/Main.hs
     dependencies:
-      - ListZipper
+      - adventofcode2017
 
+ghc-options: -Wall -Werror
