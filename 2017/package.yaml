@@ -25,7 +25,6 @@ executables:
   day-04:
     main: Day04/Main.hs
     dependencies:
-      - containers
       - recursion-schemes
   day-05:
     main: Day05/Main.hs

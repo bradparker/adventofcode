@@ -4,10 +4,10 @@ module Main
 
 import Data.Functor.Foldable
   (ListF (Cons, Nil), para)
-import Data.Set (fromList)
+import Data.List (sort)
 
 isAnagram :: String -> String -> Bool
-isAnagram a b = fromList a == fromList b
+isAnagram a b = sort a == sort b
 
 anagramIn :: String -> [String] -> Bool
 anagramIn word = any (isAnagram word)

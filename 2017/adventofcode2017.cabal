@@ -47,7 +47,6 @@ executable day-04
   ghc-options: -Wall -Werror
   build-depends:
       base
-    , containers
     , recursion-schemes
   default-language: Haskell2010
 
