@@ -31,11 +31,11 @@ right (Zipper ls (r:rs)) = Zipper (r : ls) rs
 
 cursor :: Zipper a -> Maybe a
 cursor (Zipper _ []) = Nothing
-cursor (Zipper _ (r:rs)) = Just r
+cursor (Zipper _ (r:_)) = Just r
 
 replace :: a -> Zipper a -> Zipper a
 replace a (Zipper ls []) = Zipper ls [a]
-replace a (Zipper ls (r:rs)) = Zipper ls (a : rs)
+replace a (Zipper ls (_:rs)) = Zipper ls (a : rs)
 
 fromList :: [a] -> Zipper a
 fromList = Zipper []

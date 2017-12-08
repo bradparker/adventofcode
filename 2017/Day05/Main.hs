@@ -5,7 +5,6 @@ module Main
 import Control.Monad
 import Data.Bool
 import Data.List.Zipper
-import Data.Maybe
 
 parseInt :: String -> Int
 parseInt = read
@@ -29,13 +28,15 @@ move n =
        (abs n)
        (bool intolerantRight intolerantLeft (n < 0)))
 
+replaceA :: Num a => a -> Zipper a -> Zipper a
 replaceA n = replace (n + 1)
 
+replaceB :: (Ord a, Num a) => a -> Zipper a -> Zipper a
 replaceB n = replace (bool (n + 1) (n - 1) (n >= 3))
 
 walk ::
      (Int -> Zipper Int -> Zipper Int) -> Zipper Int -> Int
-walk replacer z = go 0 (Just z)
+walk replacer zipper = go 0 (Just zipper)
   where
     go acc Nothing = acc
     go acc (Just z) =

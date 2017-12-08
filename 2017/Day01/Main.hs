@@ -17,7 +17,6 @@ sumSameAtOffset offset =
   sum . map fst . filter (uncurry (==)) . offsetPairs offset
 
 -- usage: cat ./input.txt | stack exec day-01
-
 main :: IO ()
 main = do
   nums <- map digitToInt <$> getLine

@@ -1,11 +1,12 @@
-module Main where
+module Main
+  ( main
+  ) where
 
 import Control.Applicative (pure, (<*>), (<|>))
-import Control.Arrow ((&&&))
 import Data.Char (isDigit)
 import Data.Functor.Foldable
   (ListF (Cons, Nil), para)
-import Data.Maybe (catMaybes, listToMaybe)
+import Data.Maybe (listToMaybe, mapMaybe)
 import Text.ParserCombinators.ReadP
   (munch1, readP_to_S)
 
@@ -15,13 +16,13 @@ parseInt =
   listToMaybe . readP_to_S (munch1 isDigit)
 
 parseInput :: String -> [[Int]]
-parseInput = map (catMaybes . map parseInt . words) . lines
+parseInput = map (mapMaybe parseInt . words) . lines
 
 isMultipleOf :: Integral a => a -> a -> Bool
 isMultipleOf n = (0 ==) . (`mod` n)
 
 isFactorOf :: Integral a => a -> a -> Bool
-isFactorOf n = (0 ==) . (mod n)
+isFactorOf n = (0 ==) . mod n
 
 divisibleBy :: Integral a => a -> a -> Bool
 divisibleBy n m = isMultipleOf n m || isFactorOf n m
@@ -47,7 +48,7 @@ divideDivisiblePair =
   ((dividePair . orderPair) <$>) . findDivisiblePair
 
 checksum :: Integral c => [[c]] -> c
-checksum = sum . catMaybes . map divideDivisiblePair
+checksum = sum . mapMaybe divideDivisiblePair
 
 main :: IO ()
 main = do

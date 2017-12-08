@@ -2,18 +2,12 @@ module Main
   ( main
   ) where
 
-import Control.Arrow ((>>>))
 import Control.Lens (view, _1)
-import Data.Map
-  (Map (..), empty, insert, lookup, singleton)
-import Data.Maybe (catMaybes, listToMaybe)
+import Data.Map (Map, insert, lookup, singleton)
+import Data.Maybe (listToMaybe, mapMaybe)
 import Prelude hiding (lookup)
 
 type Point = (Int, Int)
-
-type Sum = Int
-
-type StepSum = (Sum, Map Point Sum)
 
 parseInt :: String -> Int
 parseInt = read
@@ -42,14 +36,11 @@ block k =
 spiral :: [Point]
 spiral = scanl (flip ($)) (0, 0) (foldMap block [0 ..])
 
-pointAt :: Int -> Point
-pointAt = (!!) spiral
-
 taxiDistance :: Point -> Point -> Int
 taxiDistance (a, b) (c, d) = abs (a - c) + abs (b - d)
 
 distance :: Int -> Int
-distance n = taxiDistance (0, 0) (pointAt (n - 1))
+distance n = taxiDistance (0, 0) (spiral !! (n - 1))
 
 neighbours :: Point -> [Point]
 neighbours p =
@@ -67,22 +58,22 @@ neighbours p =
 
 pointSum :: Point -> Map Point Int -> Int
 pointSum point sums =
-  sum $
-  catMaybes $ map (flip lookup sums) (neighbours point)
+  sum $ mapMaybe (`lookup` sums) (neighbours point)
 
-stepSum :: StepSum -> Point -> StepSum
-stepSum (sum, sums) point = (sum', insert point sum' sums)
+stepSum ::
+     (Int, Map Point Int) -> Point -> (Int, Map Point Int)
+stepSum (_, sums) point = (sum', insert point sum' sums)
   where
     sum' = pointSum point sums
 
-stepSums :: [StepSum]
+stepSums :: [(Int, Map Point Int)]
 stepSums =
   scanl stepSum (1, singleton (0, 0) 1) (tail spiral)
 
 firstSumAbove :: Int -> Maybe Int
 firstSumAbove n =
   view _1 <$>
-  (listToMaybe (filter ((> n) . view _1) stepSums))
+  listToMaybe (filter ((> n) . view _1) stepSums)
 
 -- usage: echo "361527" | stack exec day-03
 main :: IO ()
