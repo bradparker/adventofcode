@@ -34,5 +34,10 @@ executables:
     main: Day06/Main.hs
     dependencies:
       - containers
+  day-07:
+    main: Day07/Main.hs
+    dependencies:
+      - containers
+      - lens
 
 ghc-options: -Wall -Werror
