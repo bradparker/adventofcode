@@ -44,5 +44,9 @@ executables:
     dependencies:
       - containers
       - lens
+  day-09:
+    main: Day09/Main.hs
+    dependencies:
+      - parsec
 
-ghc-options: -Wall -Werror
+ghc-options: -Wall -Wwarn

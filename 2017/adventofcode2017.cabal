@@ -10,7 +10,7 @@ cabal-version:  >= 1.10
 library
   hs-source-dirs:
       shared
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Wwarn
   build-depends:
       base
   exposed-modules:
@@ -19,7 +19,7 @@ library
 
 executable day-01
   main-is: Day01/Main.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Wwarn
   build-depends:
       base
     , array
@@ -27,7 +27,7 @@ executable day-01
 
 executable day-02
   main-is: Day02/Main.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Wwarn
   build-depends:
       base
     , recursion-schemes
@@ -35,7 +35,7 @@ executable day-02
 
 executable day-03
   main-is: Day03/Main.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Wwarn
   build-depends:
       base
     , containers
@@ -44,7 +44,7 @@ executable day-03
 
 executable day-04
   main-is: Day04/Main.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Wwarn
   build-depends:
       base
     , recursion-schemes
@@ -52,7 +52,7 @@ executable day-04
 
 executable day-05
   main-is: Day05/Main.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Wwarn
   build-depends:
       base
     , adventofcode2017
@@ -60,7 +60,7 @@ executable day-05
 
 executable day-06
   main-is: Day06/Main.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Wwarn
   build-depends:
       base
     , containers
@@ -68,7 +68,7 @@ executable day-06
 
 executable day-07
   main-is: Day07/Main.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Wwarn
   build-depends:
       base
     , containers
@@ -77,9 +77,17 @@ executable day-07
 
 executable day-08
   main-is: Day08/Main.hs
-  ghc-options: -Wall -Werror
+  ghc-options: -Wall -Wwarn
   build-depends:
       base
     , containers
     , lens
+  default-language: Haskell2010
+
+executable day-09
+  main-is: Day09/Main.hs
+  ghc-options: -Wall -Wwarn
+  build-depends:
+      base
+    , parsec
   default-language: Haskell2010
