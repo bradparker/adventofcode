@@ -50,5 +50,7 @@ executables:
       - parsec
   day-10:
     main: Day10/Main.hs
+    dependencies:
+      - split
 
 ghc-options: -Wall -Wwarn
