@@ -48,5 +48,7 @@ executables:
     main: Day09/Main.hs
     dependencies:
       - parsec
+  day-10:
+    main: Day10/Main.hs
 
 ghc-options: -Wall -Wwarn
