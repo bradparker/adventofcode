@@ -52,5 +52,9 @@ executables:
     main: Day10/Main.hs
     dependencies:
       - split
+  day-11:
+    main: Day11/Main.hs
+    dependencies:
+      - split
 
 ghc-options: -Wall -Wwarn
