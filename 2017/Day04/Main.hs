@@ -1,9 +1,10 @@
+{-# LANGUAGE LambdaCase #-}
+
 module Main
   ( main
   ) where
 
-import Data.Functor.Foldable
-  (ListF (Cons, Nil), para)
+import Data.Functor.Foldable (ListF (Cons, Nil), para)
 import Data.List (sort)
 
 isAnagram :: String -> String -> Bool
@@ -13,17 +14,17 @@ anagramIn :: String -> [String] -> Bool
 anagramIn word = any (isAnagram word)
 
 hasAnyPairs :: [String] -> Bool
-hasAnyPairs = para pair
-  where
-    pair Nil = False
-    pair (Cons word (phrase, result)) =
+hasAnyPairs =
+  para $ \case
+    Nil -> False
+    (Cons word (phrase, result)) ->
       (word `elem` phrase) || result
 
 hasAnyAnagrams :: [String] -> Bool
-hasAnyAnagrams = para anagram
-  where
-    anagram Nil = False
-    anagram (Cons word (phrase, result)) =
+hasAnyAnagrams =
+  para $ \case
+    Nil -> False
+    (Cons word (phrase, result)) ->
       (word `anagramIn` phrase) || result
 
 main :: IO ()
