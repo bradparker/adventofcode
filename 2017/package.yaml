@@ -56,5 +56,10 @@ executables:
     main: Day11/Main.hs
     dependencies:
       - split
+  day-12:
+    main: Day12/Main.hs
+    dependencies:
+      - containers
+      - lens
 
 ghc-options: -Wall -Wwarn
