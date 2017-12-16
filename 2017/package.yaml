@@ -61,5 +61,7 @@ executables:
     dependencies:
       - containers
       - lens
+  day-13:
+    main: Day13/Main.hs
 
 ghc-options: -Wall -Wwarn
