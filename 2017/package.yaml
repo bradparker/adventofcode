@@ -7,6 +7,8 @@ dependencies:
 library:
   source-dirs:
     - shared
+  dependencies:
+    - split
 
 executables:
   day-01:
@@ -63,5 +65,11 @@ executables:
       - lens
   day-13:
     main: Day13/Main.hs
+  day-14:
+    main: Day14/Main.hs
+    dependencies:
+      - adventofcode2017
+      - containers
+      - split
 
 ghc-options: -Wall -Wwarn
