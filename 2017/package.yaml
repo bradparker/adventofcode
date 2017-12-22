@@ -72,5 +72,7 @@ executables:
       - adventofcode2017
       - containers
       - lens
+  day-15:
+    main: Day15/Main.hs
 
 ghc-options: -Wall -Wwarn

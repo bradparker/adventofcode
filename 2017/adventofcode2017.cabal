@@ -136,3 +136,10 @@ executable day-14
     , containers
     , lens
   default-language: Haskell2010
+
+executable day-15
+  main-is: Day15/Main.hs
+  ghc-options: -Wall -Wwarn
+  build-depends:
+      base
+  default-language: Haskell2010
