@@ -54,6 +54,7 @@ executables:
     main: Day10/Main.hs
     dependencies:
       - split
+      - adventofcode2017
   day-11:
     main: Day11/Main.hs
     dependencies:
