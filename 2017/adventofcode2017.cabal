@@ -134,5 +134,5 @@ executable day-14
       base
     , adventofcode2017
     , containers
-    , split
+    , lens
   default-language: Haskell2010

@@ -2,14 +2,13 @@ module Main
   ( main
   ) where
 
+import Control.Lens (view, _1)
 import Crypto.Hash.Knot (encode)
+import Data.Bifunctor (first, second)
 import Data.Char (digitToInt, intToDigit)
 import Data.Foldable (foldMap)
-import Data.Function (on)
-import Data.List (groupBy)
-import Data.Set (Set, fromList, intersection, null)
+import Data.Graph (components, graphFromEdges)
 import Numeric (showIntAtBase)
-import Prelude hiding (null)
 
 leftPad :: Int -> a -> [a] -> [a]
 leftPad targetLength pad xs =
@@ -31,49 +30,36 @@ grid str =
 used :: [String] -> Int
 used = sum . map (length . filter (== '1'))
 
-rowRegions :: String -> [Set Int]
-rowRegions =
-  map (fromList . map fst) .
-  filter (('1' ==) . snd . head) .
-  groupBy (on (==) snd) . zip [0 ..]
+north :: (a, Int) -> (a, Int)
+north = second (+ 1)
 
--- | Gives us the number to add to our running total of regions
--- >>> score (fromList [0, 1, 2, 3, 4]) [(fromList [0]), (fromList [2, 3])]
--- -1
--- >>> score (fromList [0, 1]) [(fromList [0]), (fromList [2, 3])]
--- 0
--- >>> score (fromList [1]) [(fromList [0]), (fromList [2, 3])]
--- 1
--- >>> score (fromList [4]) [(fromList [0]), (fromList [2, 3])]
--- 1
-score :: Ord a => Set a -> [Set a] -> Int
-score region =
-  negate .
-  subtract 1 .
-  length . filter (not . null) . (intersection region <$>)
+south :: (a, Int) -> (a, Int)
+south = second (subtract 1)
 
-newRegions :: (Ord a) => [Set a] -> [Set a] -> Int
-newRegions regionsA regionsB =
-  sum (map (`score` regionsA) regionsB)
+east :: (Int, a) -> (Int, a)
+east = first (+ 1)
 
-regions :: (Ord a) => [[Set a]] -> Int
-regions rows = sum (zipWith newRegions ([] : rows) rows)
+west :: (Int, a) -> (Int, a)
+west = first (subtract 1)
 
--- | So this is where I've gone wrong:
--- >>> :{
--- let test =
---       [ "111"
---       , "101"
---       , "111"
---       ]
--- :}
---
--- >>> regions (map rowRegions test)
--- 0
---
--- Should be 1
+neighbours :: (Int, Int) -> [(Int, Int)]
+neighbours = ([north, south, east, west] <*>) . pure
+
+edges :: [[a]] -> [(a, (Int, Int), [(Int, Int)])]
+edges rows = do
+  (y, row) <- zip [0 ..] rows
+  (x, val) <- zip [0 ..] row
+  return (val, (x, y), neighbours (x, y))
+
+regions :: [String] -> Int
+regions =
+  length .
+  components .
+  view _1 .
+  graphFromEdges . filter (('1' ==) . view _1) . edges
+
 main :: IO ()
 main = do
   input <- grid <$> getLine
   print $ used input
-  print $ regions (map rowRegions input)
+  print $ regions input

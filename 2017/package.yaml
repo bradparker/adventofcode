@@ -71,6 +71,6 @@ executables:
     dependencies:
       - adventofcode2017
       - containers
-      - split
+      - lens
 
 ghc-options: -Wall -Wwarn
