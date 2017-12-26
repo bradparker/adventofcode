@@ -79,5 +79,9 @@ executables:
     dependencies:
       - containers
       - split
+  day-17:
+    main: Day17/Main.hs
+    dependencies:
+      - containers
 
 ghc-options: -Wall -Wwarn

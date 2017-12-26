@@ -152,3 +152,11 @@ executable day-16
     , containers
     , split
   default-language: Haskell2010
+
+executable day-17
+  main-is: Day17/Main.hs
+  ghc-options: -Wall -Wwarn
+  build-depends:
+      base
+    , containers
+  default-language: Haskell2010
