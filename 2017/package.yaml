@@ -74,5 +74,10 @@ executables:
       - lens
   day-15:
     main: Day15/Main.hs
+  day-16:
+    main: Day16/Main.hs
+    dependencies:
+      - containers
+      - split
 
 ghc-options: -Wall -Wwarn
