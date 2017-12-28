@@ -83,5 +83,10 @@ executables:
     main: Day17/Main.hs
     dependencies:
       - containers
+  day-18:
+    main: Day18/Main.hs
+    dependencies:
+      - containers
+      - vector
 
 ghc-options: -Wall -Wwarn
