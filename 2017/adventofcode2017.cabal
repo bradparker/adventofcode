@@ -169,3 +169,12 @@ executable day-18
     , containers
     , vector
   default-language: Haskell2010
+
+executable day-19
+  main-is: Day19/Main.hs
+  ghc-options: -Wall -Wwarn
+  build-depends:
+      base
+    , array
+    , split
+  default-language: Haskell2010

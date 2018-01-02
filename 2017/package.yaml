@@ -88,5 +88,10 @@ executables:
     dependencies:
       - containers
       - vector
+  day-19:
+    main: Day19/Main.hs
+    dependencies:
+      - array
+      - split
 
 ghc-options: -Wall -Wwarn
