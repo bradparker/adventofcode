@@ -103,7 +103,13 @@ collectChars g =
   (\start -> catMaybes (unfoldr navigate (start, South, g))) <$>
   findStart g
 
+countSteps :: Grid -> Maybe Int
+countSteps g =
+  (\start -> length (unfoldr navigate (start, South, g))) <$>
+  findStart g
+
 main :: IO ()
 main = do
   g <- grid . filter (/= "") . splitOn "\n" <$> getContents
   print $ collectChars g
+  print $ countSteps g
