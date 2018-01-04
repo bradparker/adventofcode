@@ -178,3 +178,12 @@ executable day-19
     , array
     , split
   default-language: Haskell2010
+
+executable day-20
+  main-is: Day20/Main.hs
+  ghc-options: -Wall -Wwarn
+  build-depends:
+      base
+    , megaparsec
+    , lens
+  default-language: Haskell2010

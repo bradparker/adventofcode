@@ -93,5 +93,10 @@ executables:
     dependencies:
       - array
       - split
+  day-20:
+    main: Day20/Main.hs
+    dependencies:
+      - megaparsec
+      - lens
 
 ghc-options: -Wall -Wwarn
