@@ -4,10 +4,9 @@ module Day02.Solution
   ( main
   ) where
 
+import Control.Arrow ((&&&), (***))
 import Control.Monad.State (State, evalState, get, put)
-import Data.Function (on)
-import Data.Functor.Const (Const(..))
-import Data.Functor.Product (Product(..))
+import Data.Bool (bool)
 import Data.List (find)
 import Data.Map (Map)
 import qualified Data.Map as Map
@@ -19,34 +18,14 @@ import qualified Data.Set as Set
 occuranceCounts :: Ord a => [a] -> Map a Int
 occuranceCounts = foldr (\c m -> Map.insertWith (+) c 1 m) Map.empty
 
-type Count = Const (Sum Int)
+countWhen :: Bool -> Sum Int
+countWhen = bool (Sum 0) (Sum 1)
 
-getCount :: Count a -> Int
-getCount = getSum . getConst
+counts :: String -> (Sum Int, Sum Int)
+counts = (countWhen . elem 2 &&& countWhen . elem 3) . occuranceCounts
 
-count :: Count a
-count = Const (Sum 1)
-
-ignore :: Count a
-ignore = Const (Sum 0)
-
-countWhenAnyCharOccursNTimes :: Int -> String -> Count a
-countWhenAnyCharOccursNTimes n string
-  | n `elem` occuranceCounts string = count
-  | otherwise = ignore
-
-runProd :: (f a -> g a -> b) -> Product f g a -> b
-runProd f (Pair fa ga) = f fa ga
-
-counts :: String -> Product Count Count a
-counts =
-  Pair <$> countWhenAnyCharOccursNTimes 2 <*> countWhenAnyCharOccursNTimes 3
-
-runCounts :: Product Count Count a -> (Int, Int)
-runCounts = runProd (on (,) getCount)
-
-checksum :: Traversable t => t String -> Int
-checksum = uncurry (*) . runCounts . traverse counts
+checksum :: Foldable t => t String -> Int
+checksum = uncurry (*) . (getSum *** getSum) . foldMap counts
 
 partOne :: String -> String
 partOne = show . checksum . lines
