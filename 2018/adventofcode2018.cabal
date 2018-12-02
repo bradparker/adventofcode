@@ -12,6 +12,7 @@ executable adventofcode2018
     Main.hs
   other-modules:
     Day01.Solution
+    Day02.Solution
   build-depends:
     base >=4.11 && <4.12,
     containers,

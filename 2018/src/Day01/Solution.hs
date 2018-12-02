@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wall #-}
 
-module Day01.Solution where
+module Day01.Solution (main) where
 
 import Control.Applicative ((<|>), many, some)
 import Control.Monad (filterM)
@@ -10,14 +10,12 @@ import Data.Maybe (listToMaybe)
 import Data.Monoid (Endo(..))
 import Data.Set as Set
 import Data.Set (Set)
-import Text.Megaparsec (ParseError, Parsec, runParser)
+import Text.Megaparsec (Parsec, runParser)
 import Text.Megaparsec.Char (char, digitChar, newline)
 
 type Change = Endo Integer
 
 type Parser = Parsec String String
-
-type ParserError = ParseError String String
 
 integer :: Parser Integer
 integer = read <$> some digitChar
