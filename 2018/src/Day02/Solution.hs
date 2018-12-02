@@ -19,9 +19,6 @@ import qualified Data.Set as Set
 occuranceCounts :: Ord a => [a] -> Map a Int
 occuranceCounts = foldr (\c m -> Map.insertWith (+) c 1 m) Map.empty
 
-withAnyNOccurance :: Ord a => Int -> [a] -> Bool
-withAnyNOccurance n = (n `elem`) . Map.elems . occuranceCounts
-
 type Count = Const (Sum Int)
 
 getCount :: Count a -> Int
@@ -35,20 +32,21 @@ ignore = Const (Sum 0)
 
 countWhenAnyCharOccursNTimes :: Int -> String -> Count a
 countWhenAnyCharOccursNTimes n string
-  | withAnyNOccurance n string = count
+  | n `elem` occuranceCounts string = count
   | otherwise = ignore
 
 runProd :: (f a -> g a -> b) -> Product f g a -> b
 runProd f (Pair fa ga) = f fa ga
 
-counts :: Traversable t => t String -> (Int, Int)
+counts :: String -> Product Count Count a
 counts =
-  runProd (on (,) getCount) .
-  traverse
-    (Pair <$> countWhenAnyCharOccursNTimes 2 <*> countWhenAnyCharOccursNTimes 3)
+  Pair <$> countWhenAnyCharOccursNTimes 2 <*> countWhenAnyCharOccursNTimes 3
+
+runCounts :: Product Count Count a -> (Int, Int)
+runCounts = runProd (on (,) getCount)
 
 checksum :: Traversable t => t String -> Int
-checksum = uncurry (*) . counts
+checksum = uncurry (*) . runCounts . traverse counts
 
 partOne :: String -> String
 partOne = show . checksum . lines
