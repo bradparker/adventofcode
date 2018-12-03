@@ -13,6 +13,7 @@ executable adventofcode2018
   other-modules:
     Day01.Solution
     Day02.Solution
+    Day03.Solution
   build-depends:
     base >=4.11 && <4.12,
     containers,
@@ -22,3 +23,5 @@ executable adventofcode2018
     src
   default-language:
     Haskell2010
+  ghc-options:
+    -Wall
