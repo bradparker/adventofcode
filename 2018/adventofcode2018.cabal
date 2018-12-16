@@ -21,6 +21,8 @@ executable adventofcode2018
   build-depends:
     base >=4.11 && <4.12,
     containers,
+    free-algebras,
+    groups,
     megaparsec,
     mtl
   hs-source-dirs:

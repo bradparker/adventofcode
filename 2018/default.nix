@@ -5,6 +5,4 @@ let
     inherit compiler;
   };
 in
-  (import ./. {
-    inherit compiler;
-  }).env
+  nixpkgs.haskellPackages.callPackage ./package.nix {}

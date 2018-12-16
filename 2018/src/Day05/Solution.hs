@@ -2,31 +2,29 @@ module Day05.Solution
   ( main
   ) where
 
-import Control.Arrow ((&&&))
-import Control.Monad.State (State, execState, get, put)
-import Data.Char (isAlpha, toLower, toUpper)
-import Data.Foldable (traverse_)
-import Data.Function (on)
-import Data.List (minimumBy)
+import Data.Group (invert)
+import Data.Algebra.Free (returnFree, foldMapFree)
+import Data.Group.Free (FreeGroupL, toList)
+import Data.Char (isAlpha, toLower, isUpper, isLower)
+
+inject :: Char -> FreeGroupL Char
+inject c
+  | isAlpha c && isLower c = returnFree c
+  | isAlpha c && isUpper c = invert $ returnFree $ toLower c
+  | otherwise = mempty
 
 partOne :: String -> Int
-partOne = length . flip execState [] . traverse_ stacker . filter isAlpha
-  where
-    stacker :: Char -> State String ()
-    stacker a = do
-      stack <- get
-      case stack of
-        [] -> put [a]
-        (b:bs) ->
-          if a /= b && (a == toUpper b || a == toLower b)
-            then put bs
-            else put $ a : b : bs
+partOne = length . toList . foldMap inject
+
+clean :: Char -> FreeGroupL Char -> FreeGroupL Char
+clean c = foldMapFree $ \d ->
+  if d == c
+    then mempty
+    else returnFree d
 
 partTwo :: String -> Int
 partTwo input =
-  snd $
-  minimumBy (on compare snd) $
-  map (id &&& (\c -> partOne (filter ((/= c) . toLower) input))) ['a' .. 'z']
+  minimum $ map (length . toList . (`clean` foldMap inject input)) ['a' .. 'z']
 
 main :: IO ()
 main = do
