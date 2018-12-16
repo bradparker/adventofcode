@@ -1,21 +1,21 @@
-module Day07.Solution where
+module Day07.Solution
+  ( main
+  ) where
 
 import Control.Applicative (some)
 import Control.Arrow ((&&&))
-import Data.Array ((!))
 import Data.Char (chr, isAlpha, isUpper, ord)
-import qualified Data.Graph as Graph
-import Data.Graph (Graph, Vertex)
+import Data.Foldable (fold)
+import qualified Data.IntMap as IntMap
+import Data.IntMap (IntMap)
+import qualified Data.IntSet as IntSet
+import Data.IntSet (IntSet)
 import qualified Data.List as List
-import Data.Maybe (listToMaybe)
-import Data.Ord (Down(Down))
-import Data.Tree (Tree)
-import qualified Data.Tree as Tree
 import Text.Megaparsec (Parsec, runParser)
 import Text.Megaparsec.Char (newline, satisfy, string)
 
 data Instruction = Instruction
-  { parent :: Int
+  { dependancy :: Int
   , identifier :: Int
   } deriving (Show)
 
@@ -36,33 +36,42 @@ instructionsParser = some (instructionParser <* newline)
 onParsedInput :: Show b => Parser a -> (a -> b) -> String -> String
 onParsedInput parser act = either show (show . act) . runParser parser ""
 
-instructionGraph :: [Instruction] -> Graph
-instructionGraph = Graph.buildG (ord 'A', ord 'Z') . map (identifier &&& parent)
+type Steps = IntMap IntSet
 
-roots :: Graph -> [Vertex]
-roots graph = filter (not . null . (graph !)) (Graph.topSort graph)
+steps :: [Instruction] -> Steps
+steps =
+  flip foldr IntMap.empty $ \ins ss ->
+    IntMap.insertWith
+      (<>)
+      (identifier ins)
+      (IntSet.singleton (dependancy ins))
+      ss
 
-root :: Graph -> Maybe Vertex
-root = listToMaybe . roots
+roots :: Steps -> IntSet
+roots ss = fold ss `IntSet.difference` IntMap.keysSet ss
 
-toTree :: Graph -> Maybe (Tree Vertex)
-toTree graph = Tree.unfoldTree (\v -> (v, graph ! v)) <$> root graph
+rootSteps :: Steps -> Steps
+rootSteps = IntSet.foldr (\s ss -> IntMap.insert s IntSet.empty ss) IntMap.empty . roots
 
-levels :: Graph -> [[Vertex]]
-levels = maybe [] Tree.levels . toTree
+withRoots :: Steps -> Steps
+withRoots = uncurry (<>) . (rootSteps &&& id)
 
-uniquelyReachable :: Graph -> [Vertex] -> [Vertex]
-uniquelyReachable graph vertices = filter notReachable vertices
+completeStep :: Int -> Steps -> Steps
+completeStep step = IntMap.delete step . IntMap.map (IntSet.delete step)
+
+performStep :: IntMap IntSet -> Maybe (Int, IntMap IntSet)
+performStep queue =
+  perform <$> IntMap.minViewWithKey (IntMap.filter IntSet.null queue)
   where
-    notReachable current =
-      not $
-        any (\other -> other /= current && Graph.path graph other current) vertices
+    perform ((next, _), _) = (next, completeStep next queue)
 
-uniquelyReachableLevels :: Graph -> [[Vertex]]
-uniquelyReachableLevels = (map . uniquelyReachable) <*> levels
+viewSteps :: IntMap IntSet -> [Int]
+viewSteps = List.unfoldr performStep
 
-instructionOrder :: [Instruction] -> [Int]
-instructionOrder =
-  reverse .
-  foldMap (List.nub . List.sortOn Down) .
-  uniquelyReachableLevels . instructionGraph
+partOne :: String -> String
+partOne = onParsedInput instructionsParser (map chr . viewSteps . withRoots . steps)
+
+main :: IO ()
+main = do
+  input <- readFile "src/Day07/input.txt"
+  putStrLn $ partOne input

@@ -17,6 +17,7 @@ executable adventofcode2018
     Day04.Solution
     Day05.Solution
     Day06.Solution
+    Day07.Solution
   build-depends:
     base >=4.11 && <4.12,
     containers,

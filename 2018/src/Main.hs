@@ -8,25 +8,26 @@ import qualified Day03.Solution as Day03
 import qualified Day04.Solution as Day04
 import qualified Day05.Solution as Day05
 import qualified Day06.Solution as Day06
+import qualified Day07.Solution as Day07
+
+runDay :: Int -> IO () -> IO ()
+runDay number day = do
+  putStrLn $ "Day " <> show number
+  day *> putStr "\n"
+
+runDays :: [IO ()] -> IO ()
+runDays = foldMap (uncurry runDay) . zip [1..]
 
 main :: IO ()
 main =  do
   hSetBuffering stdout LineBuffering
 
-  putStrLn "Day 01"
-  Day01.main
-  putStrLn ""
-  putStrLn "Day 02"
-  Day02.main
-  putStrLn ""
-  putStrLn "Day 03"
-  Day03.main
-  putStrLn ""
-  putStrLn "Day 04"
-  Day04.main
-  putStrLn ""
-  putStrLn "Day 05"
-  Day05.main
-  putStrLn ""
-  putStrLn "Day 06"
-  Day06.main
+  runDays
+    [ Day01.main
+    , Day02.main
+    , Day03.main
+    , Day04.main
+    , Day05.main
+    , Day06.main
+    , Day07.main
+    ]
