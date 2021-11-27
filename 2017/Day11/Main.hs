@@ -1,6 +1,7 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Data.List.Split (splitOn)
 
@@ -43,8 +44,8 @@ distance :: Point -> Point -> Int
 distance (x1, y1) (x2, y2) =
   maximum (map abs (zipWith (-) [y2, x2, z2] [y1, x1, z1]))
   where
-    z1 = -x1 - y1
-    z2 = -x2 - y2
+    z1 = - x1 - y1
+    z2 = - x2 - y2
 
 main :: IO ()
 main = do

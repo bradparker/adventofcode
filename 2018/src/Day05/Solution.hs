@@ -1,11 +1,12 @@
 module Day05.Solution
-  ( main
-  ) where
+  ( main,
+  )
+where
 
+import Data.Algebra.Free (foldMapFree, returnFree)
+import Data.Char (isAlpha, isLower, isUpper, toLower)
 import Data.Group (invert)
-import Data.Algebra.Free (returnFree, foldMapFree)
 import Data.Group.Free (FreeGroupL, toList)
-import Data.Char (isAlpha, toLower, isUpper, isLower)
 
 inject :: Char -> FreeGroupL Char
 inject c
@@ -33,4 +34,3 @@ main = do
   print $ partOne input
   putStrLn "Part two:"
   print $ partTwo input
-

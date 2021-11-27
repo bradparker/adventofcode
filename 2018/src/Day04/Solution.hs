@@ -1,8 +1,9 @@
 module Day04.Solution
-  ( main
-  ) where
+  ( main,
+  )
+where
 
-import Control.Applicative ((<|>), many, some)
+import Control.Applicative (many, some, (<|>))
 import Control.Arrow (second)
 import Control.Monad.State (evalState, get, put)
 import Data.Bool (bool)
@@ -48,8 +49,8 @@ shiftStartP :: Parser LogEntry
 shiftStartP = do
   t <- timeP
   void $ char ' '
-  LogEntry t . ShiftStart <$>
-    (string "Guard #" *> integerP <* string " begins shift")
+  LogEntry t . ShiftStart
+    <$> (string "Guard #" *> integerP <* string " begins shift")
 
 logEntryP :: Parser LogEntry
 logEntryP = try sleepP <|> shiftStartP
@@ -58,9 +59,10 @@ logP :: Parser [LogEntry]
 logP = many (logEntryP <* newline)
 
 data LogEntry = LogEntry
-  { time :: Time
-  , event :: Event
-  } deriving (Show)
+  { time :: Time,
+    event :: Event
+  }
+  deriving (Show)
 
 data Event
   = Awake Bool
@@ -72,24 +74,26 @@ isSleepEvent (Awake _) = True
 isSleepEvent _ = False
 
 data Time = Time
-  { year :: Int
-  , month :: Int
-  , day :: Int
-  , hour :: Int
-  , minute :: Int
-  } deriving (Show, Eq, Ord)
+  { year :: Int,
+    month :: Int,
+    day :: Int,
+    hour :: Int,
+    minute :: Int
+  }
+  deriving (Show, Eq, Ord)
 
 shiftsByGuard :: [LogEntry] -> IntMap [[Bool]]
 shiftsByGuard = go IntMap.empty
   where
     go m [] = m
-    go m (l:ls) =
+    go m (l : ls) =
       case l of
         LogEntry _ (Awake _) -> go m ls
         LogEntry _ (ShiftStart i) -> go m' next
-          where (sleepLogs, next) = span (isSleepEvent . event) ls
-                shiftSleep = expandBinaryMap True 59 (sleepMap sleepLogs)
-                m' = IntMap.insertWith (++) i [shiftSleep] m
+          where
+            (sleepLogs, next) = span (isSleepEvent . event) ls
+            shiftSleep = expandBinaryMap True 59 (sleepMap sleepLogs)
+            m' = IntMap.insertWith (++) i [shiftSleep] m
 
 sleepMap :: [LogEntry] -> IntMap Bool
 sleepMap =
@@ -101,12 +105,12 @@ sleepMap =
 expandBinaryMap :: Bool -> Int -> IntMap Bool -> [Bool]
 expandBinaryMap s n m =
   flip evalState s $
-  for [0 .. n] $ \i -> maybe (pure ()) put (IntMap.lookup i m) *> get
+    for [0 .. n] $ \i -> maybe (pure ()) put (IntMap.lookup i m) *> get
 
 frequency :: [[Bool]] -> IntMap Int
 frequency =
-  foldr (uncurry (IntMap.insertWith (+))) IntMap.empty .
-  concatMap (zip [0 ..] . map (bool 1 0))
+  foldr (uncurry (IntMap.insertWith (+))) IntMap.empty
+    . concatMap (zip [0 ..] . map (bool 1 0))
 
 sleepFrequencyByGuard :: IntMap [[Bool]] -> IntMap (IntMap Int)
 sleepFrequencyByGuard = IntMap.map frequency
@@ -122,11 +126,14 @@ partOne :: String -> String
 partOne =
   either
     show
-    (show .
-     uncurry (*) .
-     second keyWithLargestValue .
-     sleepiestGuardsFrequency . shiftsByGuard . sortOn time) .
-  runParser logP "Advent of Code: Day 04"
+    ( show
+        . uncurry (*)
+        . second keyWithLargestValue
+        . sleepiestGuardsFrequency
+        . shiftsByGuard
+        . sortOn time
+    )
+    . runParser logP "Advent of Code: Day 04"
 
 partOneMain :: IO ()
 partOneMain = putStrLn . partOne =<< readFile "src/Day04/input.txt"
@@ -139,11 +146,14 @@ partTwo :: String -> String
 partTwo =
   either
     show
-    (show .
-     uncurry (*) .
-     second keyWithLargestValue .
-     guardWithHighestFrequency . shiftsByGuard . sortOn time) .
-  runParser logP "Advent of Code: Day 04"
+    ( show
+        . uncurry (*)
+        . second keyWithLargestValue
+        . guardWithHighestFrequency
+        . shiftsByGuard
+        . sortOn time
+    )
+    . runParser logP "Advent of Code: Day 04"
 
 partTwoMain :: IO ()
 partTwoMain = putStrLn . partTwo =<< readFile "src/Day04/input.txt"

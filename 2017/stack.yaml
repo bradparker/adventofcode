@@ -1,3 +1,0 @@
-resolver: lts-9.13
-extra-deps:
-  - ListZipper-1.2.0.2

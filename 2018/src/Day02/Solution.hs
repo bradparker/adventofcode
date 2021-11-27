@@ -1,8 +1,9 @@
 {-# OPTIONS_GHC -Wall #-}
 
 module Day02.Solution
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Control.Arrow ((&&&), (***))
 import Control.Monad.State (State, evalState, get, put)
@@ -11,7 +12,7 @@ import Data.List (find)
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe (catMaybes, listToMaybe)
-import Data.Monoid (Sum(..))
+import Data.Monoid (Sum (..))
 import Data.Set (Set)
 import qualified Data.Set as Set
 
@@ -35,7 +36,7 @@ partOneMain = putStrLn . partOne =<< readFile "src/Day02/input.txt"
 
 select :: [a] -> [(a, [a])]
 select [] = []
-select (x:xs) = (x, xs) : [(y, x : ys) | (y, ys) <- select xs]
+select (x : xs) = (x, xs) : [(y, x : ys) | (y, ys) <- select xs]
 
 remainders :: [a] -> [[a]]
 remainders = map snd . select

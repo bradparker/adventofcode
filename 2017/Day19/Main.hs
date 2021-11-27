@@ -1,6 +1,7 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Control.Arrow ((***))
 import Data.Array (Array, array, assocs, bounds, (!))
@@ -8,7 +9,7 @@ import Data.Bifunctor (first, second)
 import Data.Foldable (find)
 import Data.List (unfoldr)
 import Data.List.Split (splitOn)
-import Data.Maybe (catMaybes, fromMaybe, listToMaybe)
+import Data.Maybe (catMaybes, fromMaybe)
 
 type Point = (Int, Int)
 
@@ -51,9 +52,10 @@ directions :: Point -> Grid -> [Direction]
 directions pos g =
   map
     fst
-    (filter
-       ((/= Empty) . (g !) . uncurry move)
-       (zip [North, East, South, West] (repeat pos)))
+    ( filter
+        ((/= Empty) . (g !) . uncurry move)
+        (zip [North, East, South, West] (repeat pos))
+    )
 
 outside :: (Point, Point) -> Point -> Bool
 outside ((lowX, lowY), (highX, highY)) (x, y) =
@@ -63,12 +65,12 @@ turn :: Direction -> Point -> Grid -> Direction
 turn prevDir pos g =
   fromMaybe
     prevDir
-    (listToMaybe
-       (filter (/= inverse prevDir) (directions pos g)))
+    ( find (/= inverse prevDir) (directions pos g)
+    )
 
 navigate ::
-     (Point, Direction, Grid)
-  -> Maybe (Maybe Char, (Point, Direction, Grid))
+  (Point, Direction, Grid) ->
+  Maybe (Maybe Char, (Point, Direction, Grid))
 navigate (pos, dir, g)
   | outside (bounds g) pos = Nothing
   | otherwise =
@@ -76,8 +78,9 @@ navigate (pos, dir, g)
       Continue -> Just (Nothing, (move dir pos, dir, g))
       Intersection ->
         Just
-          ( Nothing
-          , (move (turn dir pos g) pos, turn dir pos g, g))
+          ( Nothing,
+            (move (turn dir pos g) pos, turn dir pos g, g)
+          )
       Letter char ->
         Just (Just char, (move dir pos, dir, g))
       Empty -> Nothing
@@ -94,19 +97,19 @@ grid rows =
 
 findStart :: Grid -> Maybe Point
 findStart =
-  (fst <$>) .
-  find (uncurry (&&) . (((0 ==) . snd) *** (== Continue))) .
-  assocs
+  (fst <$>)
+    . find (uncurry (&&) . (((0 ==) . snd) *** (== Continue)))
+    . assocs
 
 collectChars :: Grid -> Maybe String
 collectChars g =
-  (\start -> catMaybes (unfoldr navigate (start, South, g))) <$>
-  findStart g
+  (\start -> catMaybes (unfoldr navigate (start, South, g)))
+    <$> findStart g
 
 countSteps :: Grid -> Maybe Int
 countSteps g =
-  (\start -> length (unfoldr navigate (start, South, g))) <$>
-  findStart g
+  (\start -> length (unfoldr navigate (start, South, g)))
+    <$> findStart g
 
 main :: IO ()
 main = do

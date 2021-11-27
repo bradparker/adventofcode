@@ -1,6 +1,7 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Control.Lens (view, _1)
 import Data.Char (isDigit)
@@ -22,9 +23,9 @@ parseRow = listToMaybe . map fst . readP_to_S rowP
 
 buildGraph :: [(Int, [Int])] -> Graph
 buildGraph =
-  view _1 .
-  graphFromEdges .
-  map (\(program, programs) -> ((), program, programs))
+  view _1
+    . graphFromEdges
+    . map (\(program, programs) -> ((), program, programs))
 
 reachableFromZero :: [(Int, [Int])] -> [Int]
 reachableFromZero = flip reachable 0 . buildGraph
@@ -34,6 +35,6 @@ groups = components . buildGraph
 
 main :: IO ()
 main = do
-  input <- (mapM parseRow . lines) <$> getContents
-  print ((length . reachableFromZero) <$> input)
-  print ((length . groups) <$> input)
+  input <- mapM parseRow . lines <$> getContents
+  print (length . reachableFromZero <$> input)
+  print (length . groups <$> input)

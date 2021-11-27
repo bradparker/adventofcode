@@ -1,12 +1,12 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Control.Lens (view, _1)
 import Crypto.Hash.Knot (encode)
 import Data.Bifunctor (first, second)
 import Data.Char (digitToInt, intToDigit)
-import Data.Foldable (foldMap)
 import Data.Graph (components, graphFromEdges)
 import Numeric (showIntAtBase)
 
@@ -17,9 +17,10 @@ leftPad targetLength pad xs =
 bits :: String -> String
 bits =
   foldMap
-    ((leftPad 4 '0' . flip (showIntAtBase 2 intToDigit) "") .
-     digitToInt) .
-  encode
+    ( (leftPad 4 '0' . flip (showIntAtBase 2 intToDigit) "")
+        . digitToInt
+    )
+    . encode
 
 grid :: String -> [String]
 grid str =
@@ -53,10 +54,12 @@ edges rows = do
 
 regions :: [String] -> Int
 regions =
-  length .
-  components .
-  view _1 .
-  graphFromEdges . filter (('1' ==) . view _1) . edges
+  length
+    . components
+    . view _1
+    . graphFromEdges
+    . filter (('1' ==) . view _1)
+    . edges
 
 main :: IO ()
 main = do

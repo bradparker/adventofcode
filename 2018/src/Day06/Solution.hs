@@ -8,34 +8,37 @@ import Control.Arrow ((&&&))
 import Data.Bifunctor (second)
 import Data.Either (either)
 import qualified Data.Foldable as Foldable
-import Data.List.NonEmpty (NonEmpty((:|)))
+import Data.List.NonEmpty (NonEmpty ((:|)))
 import qualified Data.List.NonEmpty as NonEmpty
-import qualified Data.Map as Map
 import Data.Map (Map)
+import qualified Data.Map as Map
 import Data.Maybe (mapMaybe)
 import Text.Megaparsec (Parsec, runParser)
 import Text.Megaparsec.Char (digitChar, newline, string)
 
 data Site = Site
-  { siteX :: Int
-  , siteY :: Int
-  } deriving (Eq, Ord, Show)
+  { siteX :: Int,
+    siteY :: Int
+  }
+  deriving (Eq, Ord, Show)
 
 data Point = Point
-  { pointX :: Int
-  , pointY :: Int
-  } deriving (Eq, Ord, Show)
+  { pointX :: Int,
+    pointY :: Int
+  }
+  deriving (Eq, Ord, Show)
 
 newtype Plane = Plane
   { getPlane :: [Point]
-  } deriving (Show)
+  }
+  deriving (Show)
 
 plane :: NonEmpty Site -> Plane
 plane sites =
   Plane $
     Point
-      <$> [ minX sites .. maxX sites ]
-      <*> [ minY sites .. maxY sites ]
+      <$> [minX sites .. maxX sites]
+      <*> [minY sites .. maxY sites]
   where
     minX = Foldable.minimum . (siteX <$>)
     minY = Foldable.minimum . (siteY <$>)
@@ -77,8 +80,8 @@ sitesP = NonEmpty.some1 (siteP <* newline)
 
 partOne :: String -> String
 partOne =
-  either show (show . Foldable.maximum . cellAreas) .
-  runParser sitesP "Advent of Code: Day 06"
+  either show (show . Foldable.maximum . cellAreas)
+    . runParser sitesP "Advent of Code: Day 06"
 
 regionArea :: NonEmpty Site -> Int
 regionArea sites = length $ filter closeEnough $ getPlane $ plane sites
@@ -88,8 +91,8 @@ regionArea sites = length $ filter closeEnough $ getPlane $ plane sites
 
 partTwo :: String -> String
 partTwo =
-  either show (show . regionArea) .
-  runParser sitesP "Advent of Code: Day 06"
+  either show (show . regionArea)
+    . runParser sitesP "Advent of Code: Day 06"
 
 main :: IO ()
 main = do

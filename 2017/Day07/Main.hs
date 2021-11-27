@@ -1,27 +1,36 @@
-module Main
-  ( main
-  ) where
+{-# LANGUAGE TupleSections #-}
 
-import Control.Applicative (liftA2, (*>), (<*), (<|>))
+module Main
+  ( main,
+  )
+where
+
+import Control.Applicative (liftA2, (<|>))
 import Control.Arrow ((&&&))
 import Control.Lens (view, _2)
 import Data.Bifunctor (bimap)
 import Data.Char (isAlpha, isDigit)
 import Data.Graph (Graph, Vertex, graphFromEdges, topSort)
-import Data.List (partition)
+import Data.List (find, partition)
 import Data.Map
-  (Map, empty, fromList, insertWith, toList, (!))
-import Data.Maybe (listToMaybe, mapMaybe, maybe)
+  ( Map,
+    empty,
+    fromList,
+    insertWith,
+    toList,
+    (!),
+  )
+import Data.Maybe (listToMaybe, mapMaybe)
 import Data.Tree (Tree, rootLabel, subForest, unfoldTree)
 import Text.ParserCombinators.ReadP
-  ( ReadP
-  , char
-  , eof
-  , many1
-  , munch1
-  , optional
-  , readP_to_S
-  , string
+  ( ReadP,
+    char,
+    eof,
+    many1,
+    munch1,
+    optional,
+    readP_to_S,
+    string,
   )
 
 nameP :: ReadP String
@@ -48,52 +57,56 @@ parseInput :: String -> Maybe (String, (Int, [String]))
 parseInput = listToMaybe . map fst . readP_to_S row
 
 topSortedNodes ::
-     ( Graph
-     , Vertex -> (node, key, [key])
-     , key -> Maybe Vertex)
-  -> [(node, key, [key])]
+  ( Graph,
+    Vertex -> (node, key, [key]),
+    key -> Maybe Vertex
+  ) ->
+  [(node, key, [key])]
 topSortedNodes (graph, getNode, _) =
   map getNode (topSort graph)
 
 findBase :: Ord key => [(key, (value, [key]))] -> Maybe key
 findBase =
-  (view _2 <$>) .
-  listToMaybe .
-  topSortedNodes .
-  graphFromEdges . map (\(k, (v, ks)) -> (v, k, ks))
+  (view _2 <$>)
+    . listToMaybe
+    . topSortedNodes
+    . graphFromEdges
+    . map (\(k, (v, ks)) -> (v, k, ks))
 
 allEq :: (Eq a) => [a] -> Bool
 allEq [] = True
 allEq xs = all (== head xs) (tail xs)
 
 occurances ::
-     Ord value => [(key, value)] -> [(value, [key])]
+  Ord value => [(key, value)] -> [(value, [key])]
 occurances =
-  toList .
-  foldr (\(k, v) acc -> insertWith (++) v [k] acc) empty
+  toList
+    . foldr (\(k, v) acc -> insertWith (++) v [k] acc) empty
 
 singleAndRest ::
-     Ord value
-  => [(key, value)]
-  -> (Maybe (key, value), [(key, value)])
+  Ord value =>
+  [(key, value)] ->
+  (Maybe (key, value), [(key, value)])
 singleAndRest =
   bimap
-    (listToMaybe .
-     ((\(value, keys) -> map (\k -> (k, value)) keys) =<<))
-    ((\(value, keys) -> map (\k -> (k, value)) keys) =<<) .
-  partition ((1 ==) . length . snd) . occurances
+    ( listToMaybe
+        . ((\(value, keys) -> map (,value) keys) =<<)
+    )
+    ((\(value, keys) -> map (,value) keys) =<<)
+    . partition ((1 ==) . length . snd)
+    . occurances
 
 buildTree ::
-     (Ord key, Ord value)
-  => [(key, (value, [key]))]
-  -> Maybe (Tree value)
+  (Ord key, Ord value) =>
+  [(key, (value, [key]))] ->
+  Maybe (Tree value)
 buildTree rows = mapToTree (fromList rows) <$> findBase rows
 
 mapToTree ::
-     (Ord key, Ord value)
-  => Map key (value, [key])
-  -> key
-  -> Tree value
+  (Ord key, Ord value) =>
+  Map key (value, [key]) ->
+  key ->
+  Tree value
 mapToTree m = unfoldTree (\k -> m ! k)
 
 weight :: Num a => Tree a -> a
@@ -106,20 +119,21 @@ isBalenced :: (Num value, Eq value) => Tree value -> Bool
 isBalenced = allEq . map weight . subForest
 
 findInSubforest ::
-     Eq value => value -> Tree value -> Maybe (Tree value)
+  Eq value => value -> Tree value -> Maybe (Tree value)
 findInSubforest value =
-  listToMaybe . filter ((value ==) . rootLabel) . subForest
+  find ((value ==) . rootLabel) . subForest
 
 unbalAndBalInSubforest ::
-     (Eq value, Ord value, Num value)
-  => Tree value
-  -> Maybe (Tree value, Tree value)
+  (Eq value, Ord value, Num value) =>
+  Tree value ->
+  Maybe (Tree value, Tree value)
 unbalAndBalInSubforest t =
   uncurry
     (liftA2 (,))
-    ( ((`findInSubforest` t) . fst) =<< unbal
-    , listToMaybe
-        (mapMaybe ((`findInSubforest` t) . fst) bal))
+    ( ((`findInSubforest` t) . fst) =<< unbal,
+      listToMaybe
+        (mapMaybe ((`findInSubforest` t) . fst) bal)
+    )
   where
     (unbal, bal) = (singleAndRest . subTowerWeights) t
 
@@ -129,7 +143,7 @@ unbalDistance (unbal, bal) =
 
 unbalencedSubtree :: Tree Int -> Maybe (Tree Int)
 unbalencedSubtree =
-  listToMaybe . filter (not . isBalenced) . subForest
+  find (not . isBalenced) . subForest
 
 valueToCorrect :: Tree Int -> Maybe Int
 valueToCorrect t =
@@ -140,7 +154,7 @@ valueToCorrect t =
 
 main :: IO ()
 main = do
-  input <- (mapMaybe parseInput . lines) <$> getContents
+  input <- mapMaybe parseInput . lines <$> getContents
   putStrLn "Bottom of the tower:"
   print $ findBase input
   putStrLn "Value required to be balenced:"

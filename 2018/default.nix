@@ -1,8 +1,1 @@
-{ compiler ? "default"
-}:
-let
-  nixpkgs = import ./nix/packages {
-    inherit compiler;
-  };
-in
-  nixpkgs.haskellPackages.callPackage ./package.nix {}
+{ haskellPackages }: haskellPackages.callCabal2nix "adventofcode2018" ./. { }

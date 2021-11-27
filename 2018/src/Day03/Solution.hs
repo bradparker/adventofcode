@@ -1,8 +1,9 @@
 module Day03.Solution
-  ( main
-  ) where
+  ( main,
+  )
+where
 
-import Control.Applicative ((<|>), many, some)
+import Control.Applicative (many, some, (<|>))
 import Data.Either (either)
 import Data.Functor (void)
 import Data.List (find)
@@ -41,16 +42,18 @@ rectsP :: Parser [Rect]
 rectsP = many (rectP <* (void newline <|> eof))
 
 data Point = Point
-  { x :: Int
-  , y :: Int
-  } deriving (Show, Eq, Ord)
+  { x :: Int,
+    y :: Int
+  }
+  deriving (Show, Eq, Ord)
 
 data Rect = Rect
-  { identifier :: Int
-  , offset :: Point
-  , width :: Int
-  , height :: Int
-  } deriving (Show)
+  { identifier :: Int,
+    offset :: Point,
+    width :: Int,
+    height :: Int
+  }
+  deriving (Show)
 
 coordinates :: Rect -> Set Point
 coordinates rect =
@@ -64,10 +67,10 @@ pointOccurances = Map.unionsWith (+) . map (Map.fromSet (const 1))
 
 duplicateArea :: [Rect] -> Int
 duplicateArea =
-  length .
-  Map.filter (> 1) .
-  pointOccurances .
-  map coordinates
+  length
+    . Map.filter (> 1)
+    . pointOccurances
+    . map coordinates
 
 partOne :: String -> String
 partOne =
@@ -78,11 +81,11 @@ partOneMain = putStrLn . partOne =<< readFile "src/Day03/input.txt"
 
 totalOverlap :: [Rect] -> Set Point
 totalOverlap =
-  Set.fromList .
-  Map.keys .
-  Map.filter (> 1) .
-  pointOccurances .
-  map coordinates
+  Set.fromList
+    . Map.keys
+    . Map.filter (> 1)
+    . pointOccurances
+    . map coordinates
 
 findLoner :: [Rect] -> Maybe Rect
 findLoner rects = find (\r -> Set.disjoint (coordinates r) overlap) rects

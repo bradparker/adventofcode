@@ -1,30 +1,39 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
-import           Control.Applicative ((<|>))
-import           Control.Monad (void)
-import           Data.Char (isAlpha, isDigit)
-import           Data.Foldable (find, foldlM, toList)
-import           Data.List.Split (splitOn)
-import           Data.Maybe (listToMaybe, mapMaybe)
-import           Data.Monoid ((<>))
-import           Data.Sequence (Seq)
+import Control.Applicative ((<|>))
+import Control.Monad (void)
+import Data.Char (isAlpha, isDigit)
+import Data.Foldable (find, foldlM, toList)
+import Data.List.Split (splitOn)
+import Data.Maybe (listToMaybe, mapMaybe)
+import Data.Monoid ((<>))
+import Data.Sequence (Seq)
 import qualified Data.Sequence as Seq
-import           Text.ParserCombinators.ReadP
-  (ReadP, char, eof, munch1, readP_to_S, satisfy)
+import Text.ParserCombinators.ReadP
+  ( ReadP,
+    char,
+    eof,
+    munch1,
+    readP_to_S,
+    satisfy,
+  )
 
 data Move
   = Spin Int
-  | Exchange Int
-             Int
-  | Partner Char
-            Char
+  | Exchange
+      Int
+      Int
+  | Partner
+      Char
+      Char
   deriving (Show)
 
 spinP :: ReadP Move
 spinP =
-  (Spin . read) <$> (char 's' *> munch1 isDigit <* eof)
+  Spin . read <$> (char 's' *> munch1 isDigit <* eof)
 
 exchangeP :: ReadP Move
 exchangeP = do
@@ -55,10 +64,10 @@ parseInput = mapMaybe parseMove . splitOn ","
 
 findIndex :: (Eq a) => a -> Seq a -> Maybe Int
 findIndex a xs =
-  fst <$>
-  find
-    ((a ==) . snd)
-    (Seq.zip (Seq.fromList [0 .. (Seq.length xs)]) xs)
+  fst
+    <$> find
+      ((a ==) . snd)
+      (Seq.zip (Seq.fromList [0 .. (Seq.length xs)]) xs)
 
 spin :: Int -> Seq a -> Seq a
 spin n xs =
@@ -82,8 +91,8 @@ performMove (Partner a b) xs = partner a b xs
 
 dance :: [Move] -> Maybe String
 dance =
-  (toList <$>) .
-  foldlM (flip performMove) (Seq.fromList ['a' .. 'p'])
+  (toList <$>)
+    . foldlM (flip performMove) (Seq.fromList ['a' .. 'p'])
 
 main :: IO ()
 main = do

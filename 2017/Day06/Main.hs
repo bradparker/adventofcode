@@ -1,16 +1,17 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
-import           Data.Bool (bool)
-import           Data.List (elemIndex)
-import           Data.Map
-  ( Map
-  , foldrWithKey
-  , fromList
-  , insert
-  , insertWith
-  , size
+import Data.Bool (bool)
+import Data.List (elemIndex)
+import Data.Map
+  ( Map,
+    foldrWithKey,
+    fromList,
+    insert,
+    insertWith,
+    size,
   )
 import qualified Data.Set as Set
 
@@ -52,15 +53,17 @@ takeWhileUnique :: Ord a => [a] -> [a]
 takeWhileUnique = go Set.empty []
   where
     go _ acc [] = acc
-    go s acc (x:xs)
+    go s acc (x : xs)
       | x `Set.member` s = acc
       | otherwise = go (Set.insert x s) (x : acc) xs
 
 numUntilRepeated :: [Int] -> Int
 numUntilRepeated =
-  length .
-  takeWhileUnique .
-  redistributionCycles . fromList . zip [0 ..]
+  length
+    . takeWhileUnique
+    . redistributionCycles
+    . fromList
+    . zip [0 ..]
 
 loopSize :: [Int] -> Maybe Int
 loopSize registers =
@@ -73,7 +76,7 @@ loopSize registers =
 
 main :: IO ()
 main = do
-  input <- ((parseInt <$>) . words) <$> getLine
+  input <- (parseInt <$>) . words <$> getLine
   putStrLn "Cycles until repeated step: "
   print $ numUntilRepeated input
   putStrLn "Size of repeated loop: "

@@ -1,23 +1,25 @@
 module Day07.Solution
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Control.Applicative (some)
 import Control.Arrow ((&&&))
 import Data.Char (chr, isAlpha, isUpper, ord)
 import Data.Foldable (fold)
-import qualified Data.IntMap as IntMap
 import Data.IntMap (IntMap)
-import qualified Data.IntSet as IntSet
+import qualified Data.IntMap as IntMap
 import Data.IntSet (IntSet)
+import qualified Data.IntSet as IntSet
 import qualified Data.List as List
-import Text.Megaparsec (Parsec, runParser)
-import Text.Megaparsec.Char (newline, satisfy, string)
+import Text.Megaparsec (Parsec, runParser, satisfy)
+import Text.Megaparsec.Char (newline, string)
 
 data Instruction = Instruction
-  { dependancy :: Int
-  , identifier :: Int
-  } deriving (Show)
+  { dependancy :: Int,
+    identifier :: Int
+  }
+  deriving (Show)
 
 type Parser = Parsec String String
 

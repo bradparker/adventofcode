@@ -2,14 +2,14 @@
 
 module Day01.Solution (main) where
 
-import Control.Applicative ((<|>), many, some)
+import Control.Applicative (many, some, (<|>))
 import Control.Monad (filterM)
 import Control.Monad.State (State, evalState, get, modify)
 import Data.Either (either)
 import Data.Maybe (listToMaybe)
-import Data.Monoid (Endo(..))
-import Data.Set as Set
+import Data.Monoid (Endo (..))
 import Data.Set (Set)
+import Data.Set as Set
 import Text.Megaparsec (Parsec, runParser)
 import Text.Megaparsec.Char (char, digitChar, newline)
 
@@ -37,8 +37,8 @@ applyChanges n cs = appEndo (mconcat cs) n
 
 partOne :: String -> String
 partOne =
-  either show (show . applyChanges 0) .
-  runParser changes "Advent of Code: Day 01"
+  either show (show . applyChanges 0)
+    . runParser changes "Advent of Code: Day 01"
 
 partOneMain :: IO ()
 partOneMain = putStrLn . partOne =<< readFile "src/Day01/input.txt"
@@ -60,8 +60,8 @@ firstDuplicate = listToMaybe . duplicates
 
 partTwo :: String -> String
 partTwo =
-  either show (show . firstDuplicate . observeChanges 0 . cycle) .
-  runParser changes "Advent of Code: Day 01"
+  either show (show . firstDuplicate . observeChanges 0 . cycle)
+    . runParser changes "Advent of Code: Day 01"
 
 partTwoMain :: IO ()
 partTwoMain = putStrLn . partTwo =<< readFile "src/Day01/input.txt"

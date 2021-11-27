@@ -1,7 +1,9 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
+import Data.Functor (($>))
 import Text.ParserCombinators.Parsec
 
 data Expression
@@ -10,18 +12,18 @@ data Expression
   deriving (Show)
 
 escaped :: Parser String
-escaped = many1 (char '!' *> anyChar) *> return ""
+escaped = many1 (char '!' *> anyChar) $> ""
 
 content :: Parser String
 content = many1 (noneOf "!>")
 
 garbage :: Parser Expression
 garbage =
-  Garbage <$>
-  between
-    (char '<')
-    (char '>')
-    (concat <$> many (escaped <|> content))
+  Garbage
+    <$> between
+      (char '<')
+      (char '>')
+      (concat <$> many (escaped <|> content))
 
 group :: Parser Expression
 group = Group <$> between (char '{') (char '}') expression
@@ -30,7 +32,7 @@ expression :: Parser [Expression]
 expression = sepBy (group <|> garbage) (char ',')
 
 score :: Expression -> Int
-score ex = go 1 ex
+score = go 1
   where
     go _ (Garbage _) = 0
     go par (Group []) = par
@@ -47,9 +49,9 @@ main = do
   input <- getContents
   putStrLn "Group score"
   print $
-    (score <$>) <$>
-    parse expression "" input
+    (score <$>)
+      <$> parse expression "" input
   putStrLn "Size of all cleaned garbage"
   print $
-    (garbageLen <$>) <$>
-    parse expression "" input
+    (garbageLen <$>)
+      <$> parse expression "" input

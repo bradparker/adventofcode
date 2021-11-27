@@ -1,9 +1,10 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
-import Data.List.Split (splitOn)
 import Crypto.Hash.Knot (encode, knotted)
+import Data.List.Split (splitOn)
 
 solve :: [Int] -> Int
 solve = product . take 2 . knotted

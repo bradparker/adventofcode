@@ -1,14 +1,16 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Control.Lens (view, _3)
 import Control.Monad (void)
 import Data.Function (on)
 import Data.List (sortBy)
 import Data.Maybe (listToMaybe, mapMaybe)
-import Text.Megaparsec
-import Text.Megaparsec.Lexer (decimal, signed)
+import Text.Megaparsec (Parsec, between, optional, parseMaybe)
+import Text.Megaparsec.Char (char, spaceChar, string)
+import Text.Megaparsec.Char.Lexer (decimal, signed)
 
 type Point = (Int, Int, Int)
 
@@ -33,8 +35,9 @@ vec3 =
   between
     (char '<')
     (char '>')
-    ((,,) <$> signedNumber <*> (char ',' *> signedNumber) <*>
-     (char ',' *> signedNumber))
+    ( (,,) <$> signedNumber <*> (char ',' *> signedNumber)
+        <*> (char ',' *> signedNumber)
+    )
 
 point :: Parsec () String Point
 point = string "p=" *> vec3
@@ -47,8 +50,8 @@ acceleration = string "a=" *> vec3
 
 particle :: Parsec () String Particle
 particle =
-  (,,) <$> point <*> (string ", " *> velocity) <*>
-  (string ", " *> acceleration)
+  (,,) <$> point <*> (string ", " *> velocity)
+    <*> (string ", " *> acceleration)
 
 parseParticle :: String -> Maybe Particle
 parseParticle = parseMaybe particle
@@ -58,9 +61,9 @@ parseInput = mapMaybe parseParticle . lines
 
 slowestAcc :: [Particle] -> Maybe (Int, Particle)
 slowestAcc =
-  listToMaybe .
-  sortBy (on compare (distance (0, 0, 0) . view _3 . snd)) .
-  zip [0 ..]
+  listToMaybe
+    . sortBy (on compare (distance (0, 0, 0) . view _3 . snd))
+    . zip [0 ..]
 
 main :: IO ()
 main = do

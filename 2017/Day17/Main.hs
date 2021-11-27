@@ -1,12 +1,12 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
-import           Data.Bifunctor (first)
-import           Data.Foldable (foldl')
-import           Data.List (elemIndices)
-import           Data.Monoid ((<>))
-import           Data.Sequence (Seq)
+import Data.Bifunctor (first)
+import Data.Foldable (foldl')
+import Data.List (elemIndices)
+import Data.Sequence (Seq)
 import qualified Data.Sequence as Seq
 
 insertAt :: Int -> a -> Seq a -> Seq a

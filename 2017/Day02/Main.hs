@@ -1,19 +1,23 @@
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE TupleSections #-}
 
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
-import Control.Applicative (pure, (<*>), (<|>))
+import Control.Applicative ((<|>))
 import Data.Char (isDigit)
 import Data.Functor.Foldable (ListF (Cons, Nil), para)
+import Data.List (find)
 import Data.Maybe (listToMaybe, mapMaybe)
 import Text.ParserCombinators.ReadP (munch1, readP_to_S)
 
 parseInt :: String -> Maybe Int
 parseInt =
-  fmap (read . fst) .
-  listToMaybe . readP_to_S (munch1 isDigit)
+  fmap (read . fst)
+    . listToMaybe
+    . readP_to_S (munch1 isDigit)
 
 parseInput :: String -> [[Int]]
 parseInput = map (mapMaybe parseInt . words) . lines
@@ -28,14 +32,14 @@ divisibleBy :: Integral a => a -> a -> Bool
 divisibleBy n m = isMultipleOf n m || isFactorOf n m
 
 findDivisibleBy :: Integral a => a -> [a] -> Maybe a
-findDivisibleBy n = listToMaybe . filter (divisibleBy n)
+findDivisibleBy n = find (divisibleBy n)
 
 findDivisiblePair :: Integral c => [c] -> Maybe (c, c)
 findDivisiblePair =
   para $ \case
     Nil -> Nothing
     (Cons n (ns, result)) ->
-      ((,) <$> pure n <*> findDivisibleBy n ns) <|> result
+      ((,n) <$> findDivisibleBy n ns) <|> result
 
 orderPair :: Ord a => (a, a) -> (a, a)
 orderPair (a, b) = (max a b, min a b)

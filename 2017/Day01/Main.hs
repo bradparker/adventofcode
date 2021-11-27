@@ -1,6 +1,7 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Data.Array (assocs, listArray, (!))
 import Data.Char (digitToInt)
@@ -16,7 +17,7 @@ sumSameAtOffset :: Int -> [Int] -> Int
 sumSameAtOffset offset =
   sum . map fst . filter (uncurry (==)) . offsetPairs offset
 
--- usage: cat ./input.txt | stack exec day-01
+-- usage: cat ./input.txt | cabal run exe:day-01
 main :: IO ()
 main = do
   nums <- map digitToInt <$> getLine

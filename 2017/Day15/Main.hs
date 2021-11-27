@@ -1,9 +1,10 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
-import Data.Function (on)
 import Data.Bits ((.&.))
+import Data.Function (on)
 
 divisibleBy :: Int -> Int -> Bool
 divisibleBy n = (0 ==) . (`rem` n)
@@ -20,23 +21,27 @@ match = on (==) (.&. 0xffff)
 solve1 :: Int -> Int -> Int
 solve1 a b =
   length
-    (filter
-       (uncurry match)
-       (take 40000000 (zip (generator 16807 a) (generator 48271 b))))
+    ( filter
+        (uncurry match)
+        (take 40000000 (zip (generator 16807 a) (generator 48271 b)))
+    )
 
 solve2 :: Int -> Int -> Int
 solve2 a b =
   length
-    (filter
-       (uncurry match)
-       (take
-          5000000
-          (zip
-             (filter (divisibleBy 4) (tail (generator 16807 a)))
-             (filter (divisibleBy 8) (tail (generator 48271 b))))))
+    ( filter
+        (uncurry match)
+        ( take
+            5000000
+            ( zip
+                (filter (divisibleBy 4) (tail (generator 16807 a)))
+                (filter (divisibleBy 8) (tail (generator 48271 b)))
+            )
+        )
+    )
 
 main :: IO ()
 main = do
-  [a, b] <- (map read . words) <$> getLine
+  [a, b] <- map read . words <$> getLine
   print $ solve1 a b
   print $ solve2 a b

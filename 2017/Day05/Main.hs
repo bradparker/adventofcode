@@ -1,6 +1,7 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Control.Monad
 import Data.Bool
@@ -24,9 +25,10 @@ move n =
   foldr
     (<=<)
     return
-    (replicate
-       (abs n)
-       (bool intolerantRight intolerantLeft (n < 0)))
+    ( replicate
+        (abs n)
+        (bool intolerantRight intolerantLeft (n < 0))
+    )
 
 replaceA :: Num a => a -> Zipper a -> Zipper a
 replaceA n = replace (n + 1)
@@ -35,7 +37,7 @@ replaceB :: (Ord a, Num a) => a -> Zipper a -> Zipper a
 replaceB n = replace (bool (n + 1) (n - 1) (n >= 3))
 
 walk ::
-     (Int -> Zipper Int -> Zipper Int) -> Zipper Int -> Int
+  (Int -> Zipper Int -> Zipper Int) -> Zipper Int -> Int
 walk replacer zipper = go 0 (Just zipper)
   where
     go acc Nothing = acc

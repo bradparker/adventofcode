@@ -1,10 +1,11 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Data.Bifunctor (bimap, first)
 import Data.Bool (bool)
-import Data.Maybe (listToMaybe)
+import Data.List (find)
 
 parseInput :: String -> [(Int, Int)]
 parseInput =
@@ -26,9 +27,10 @@ caught delay =
 
 minDelay :: [(Int, Int)] -> Maybe Int
 minDelay =
-  (fst <$>) .
-  listToMaybe .
-  filter (not . uncurry caught) . zip [0 ..] . repeat
+  (fst <$>)
+    . find (not . uncurry caught)
+    . zip [0 ..]
+    . repeat
 
 main :: IO ()
 main = do

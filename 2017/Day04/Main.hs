@@ -1,8 +1,9 @@
 {-# LANGUAGE LambdaCase #-}
 
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Data.Functor.Foldable (ListF (Cons, Nil), para)
 import Data.List (sort)
@@ -29,7 +30,7 @@ hasAnyAnagrams =
 
 main :: IO ()
 main = do
-  phrases <- (map words . lines) <$> getContents
+  phrases <- map words . lines <$> getContents
   putStrLn "Valid (equal)"
   print $ length $ filter not $ map hasAnyPairs phrases
   putStrLn "Valid (anagram)"

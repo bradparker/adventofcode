@@ -1,10 +1,12 @@
 module Main
-  ( main
-  ) where
+  ( main,
+  )
+where
 
 import Control.Lens (view, _1)
+import Data.List (find)
 import Data.Map (Map, insert, lookup, singleton)
-import Data.Maybe (listToMaybe, mapMaybe)
+import Data.Maybe (mapMaybe)
 import Prelude hiding (lookup)
 
 type Point = (Int, Int)
@@ -27,10 +29,10 @@ down (x, y) = (x, y - 1)
 block :: Num a => Int -> [(a, a) -> (a, a)]
 block k =
   concat
-    [ replicate (2 * k + 1) right
-    , replicate (2 * k + 1) up
-    , replicate (2 * k + 2) left
-    , replicate (2 * k + 2) down
+    [ replicate (2 * k + 1) right,
+      replicate (2 * k + 1) up,
+      replicate (2 * k + 2) left,
+      replicate (2 * k + 2) down
     ]
 
 spiral :: [Point]
@@ -46,14 +48,14 @@ neighbours :: Point -> [Point]
 neighbours p =
   map
     ($ p)
-    [ right
-    , up . right
-    , up
-    , up . left
-    , left
-    , down . left
-    , down
-    , down . right
+    [ right,
+      up . right,
+      up,
+      up . left,
+      left,
+      down . left,
+      down,
+      down . right
     ]
 
 pointSum :: Point -> Map Point Int -> Int
@@ -61,7 +63,7 @@ pointSum point sums =
   sum $ mapMaybe (`lookup` sums) (neighbours point)
 
 stepSum ::
-     (Int, Map Point Int) -> Point -> (Int, Map Point Int)
+  (Int, Map Point Int) -> Point -> (Int, Map Point Int)
 stepSum (_, sums) point = (sum', insert point sum' sums)
   where
     sum' = pointSum point sums
@@ -72,10 +74,10 @@ stepSums =
 
 firstSumAbove :: Int -> Maybe Int
 firstSumAbove n =
-  view _1 <$>
-  listToMaybe (filter ((> n) . view _1) stepSums)
+  view _1
+    <$> find ((> n) . view _1) stepSums
 
--- usage: echo "361527" | stack exec day-03
+-- usage: echo "361527" | cabal run exe:day-03
 main :: IO ()
 main = do
   n <- parseInt <$> getLine
